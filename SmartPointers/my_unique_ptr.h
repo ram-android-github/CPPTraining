@@ -78,4 +78,21 @@ public:
     explicit operator bool() const noexcept {
         return ptr_ != nullptr;
     }
+
+     // move constructor
+    unique_ptr(unique_ptr&& other) noexcept 
+        : ptr(other.ptr)   // steal resource from rvalue reference
+    {
+        other.ptr = nullptr; // release old pointer of rvalue reference
+    }
+
+    // move assignment
+    unique_ptr& operator=(unique_ptr&& other) noexcept {
+        if (this != &other) {
+            delete ptr;          // delete current resource
+            ptr = other.ptr;     // steal resource from rvalue reference
+            other.ptr = nullptr; // release pointer of rvalue reference
+        }
+        return *this;
+    }
 };
